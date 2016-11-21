@@ -1,0 +1,12 @@
+require 'entity_store/controls'
+
+require 'entity_store/postgres/controls/id'
+require 'entity_store/postgres/controls/stream_name'
+require 'entity_store/postgres/controls/version'
+require 'entity_store/postgres/controls/message'
+require 'entity_store/postgres/controls/batch'
+require 'entity_store/postgres/controls/entity'
+require 'entity_store/postgres/controls/projection'
+require 'entity_store/postgres/controls/snapshot'
+require 'entity_store/postgres/controls/write'
+require 'entity_store/postgres/controls/entity_store'
