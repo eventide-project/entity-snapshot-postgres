@@ -1,1 +1,4 @@
-require 'entity_store/postgres'
+require 'messaging/postgres'
+require 'entity_store'
+
+require 'entity_snapshot/postgres/postgres'
