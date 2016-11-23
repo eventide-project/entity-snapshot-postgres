@@ -2,6 +2,12 @@ module EntitySnapshot
   module Postgres
     def self.included(cls)
       cls.class_exec do
+        prepend Configure
+        prepend Get
+        prepend Put
+
+        include Log::Dependency
+
         include Messaging::StreamName
         include EntityCache::Storage::Persistent
 
@@ -18,54 +24,71 @@ module EntitySnapshot
       stream_name id, category_name
     end
 
-    def configure
-      Messaging::Postgres::Write.configure self
+    module Configure
+      def configure(session: nil)
+        Messaging::Postgres::Write.configure(self, session: session)
+      end
     end
 
-    def get(id)
-      stream_name = snapshot_stream_name id
+    module Put
+      def put(id, entity, version, time)
+        stream_name = snapshot_stream_name(id)
 
-      logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+        logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
-      reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1, direction: :backward
+        entity_data = Transform::Write.raw_data(entity)
 
-      event = nil
-      reader.each do |_event|
-        event = _event
-        break
+        # event_data = EventSource::EventData::Write.new
+
+        # data = {
+        #   entity_data: entity_data,
+        #   entity_version: version
+        # }
+
+        # event_data.type = 'Recorded'
+        # event_data.data = data
+
+        recorded = Recorded.new
+
+        recorded.entity_data = entity_data
+        recorded.entity_version = version
+
+        position = writer.(recorded, stream_name)
+
+        logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+
+        position
       end
-
-      if event.nil?
-        logger.debug "Snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
-        return
-      end
-
-      message = Serialize::Read.instance event.data, Message
-      entity = message.entity entity_class
-
-      version, time = message.version, message.time
-
-      logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
-
-      return entity, version, time
     end
 
-    def put(id, entity, version, time)
-      stream_name = snapshot_stream_name id
+    module Get
+      # def get(id)
+      #   stream_name = snapshot_stream_name id
 
-      logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      #   logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
 
-      data = Serialize::Write.raw_data entity
+      #   reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1, direction: :backward
 
-      message = Message.new
-      message.id = id
-      message.data = data
-      message.version = version
-      message.time = time
+      #   event = nil
+      #   reader.each do |_event|
+      #     event = _event
+      #     break
+      #   end
 
-      writer.write message, stream_name
+      #   if event.nil?
+      #     logger.debug "Snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+      #     return
+      #   end
 
-      logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      #   message = Serialize::Read.instance event.data, Message
+      #   entity = message.entity entity_class
+
+      #   version, time = message.version, message.time
+
+      #   logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
+
+      #   return entity, version, time
+      # end
     end
   end
 end

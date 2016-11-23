@@ -1,5 +1,6 @@
 require 'entity_store/controls'
 
+require 'entity_snapshot/postgres/controls/time'
 require 'entity_snapshot/postgres/controls/id'
 require 'entity_snapshot/postgres/controls/stream_name'
 require 'entity_snapshot/postgres/controls/version'
