@@ -1,5 +1,5 @@
 module EntitySnapshot
-  class Postgres
+  module Postgres
     module Controls
       module EntityStore
         def self.example(category: nil, entity_class: nil, projection_class: nil)

@@ -1,5 +1,5 @@
 module EntitySnapshot
-  class Postgres
+  module Postgres
     module Controls
       StreamName = EntityStore::Controls::StreamName
     end

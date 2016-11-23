@@ -1,5 +1,5 @@
 module EntitySnapshot
-  class Postgres
+  module Postgres
     module Controls
       module Batch
         def self.example

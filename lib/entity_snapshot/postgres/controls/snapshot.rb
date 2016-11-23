@@ -1,9 +1,13 @@
-# module EntityStore
-#   module Postgres
-#     module Controls
-#       module Snapshot
-#         Example = EntityStore::Controls::Snapshot::Example
-#       end
-#     end
-#   end
-# end
+module EntitySnapshot
+  module Postgres
+    module Controls
+      module Snapshot
+        class Example
+          include ::EntitySnapshot::Postgres
+
+          category :some_entity
+        end
+      end
+    end
+  end
+end

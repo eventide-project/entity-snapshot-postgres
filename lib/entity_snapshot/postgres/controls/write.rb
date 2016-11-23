@@ -1,5 +1,5 @@
 module EntitySnapshot
-  class Postgres
+  module Postgres
     module Controls
       module Write
         def self.batch(category: nil)
