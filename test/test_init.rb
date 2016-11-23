@@ -11,3 +11,4 @@ require 'pp'
 
 require 'entity_snapshot/postgres/controls'
 include EntitySnapshot
+Controls = EntitySnapshot::Postgres::Controls

@@ -12,7 +12,7 @@ module EntitySnapshot
     end
 
     def snapshot_stream_name(id)
-      category_name = self.category_name
+      category_name = self.category
       category_name = "#{category_name}:snapshot"
 
       stream_name id, category_name

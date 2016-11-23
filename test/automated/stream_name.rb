@@ -1,0 +1,40 @@
+require_relative 'automated_init'
+
+context "Snapshot Stream Name" do
+  snapshot = Controls::Snapshot.example
+  id = Controls::ID.example
+
+  snapshot_stream_name = snapshot.snapshot_stream_name(id)
+
+  context "First Part" do
+    context "Category" do
+      category = Messaging::StreamName.get_category(snapshot_stream_name)
+      parts = category.split(':')
+
+      test "Has two parts separated by a colon" do
+        assert(parts.count == 2)
+      end
+
+      context "First Part" do
+        test "Is the category" do
+          assert(parts.first == 'someEntity')
+        end
+      end
+
+      context "Second Part" do
+        test "Is the snapshot type" do
+          assert(parts.last == 'snapshot')
+        end
+      end
+    end
+  end
+
+  context "Second Part" do
+    stream_id = Messaging::StreamName.get_id(snapshot_stream_name)
+
+    test "Is the ID" do
+      assert(snapshot_stream_name.end_with? "-#{id}")
+    end
+  end
+end
+
