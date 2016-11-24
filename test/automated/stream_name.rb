@@ -6,7 +6,7 @@ context "Snapshot Stream Name" do
 
   snapshot = Controls::Snapshot.example
 
-  snapshot_stream_name = snapshot.snapshot_stream_name(entity, id)
+  snapshot_stream_name = snapshot.snapshot_stream_name(id, entity)
 
   context "First Part" do
     context "Category" do

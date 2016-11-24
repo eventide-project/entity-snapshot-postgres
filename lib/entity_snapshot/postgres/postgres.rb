@@ -7,8 +7,12 @@ module EntitySnapshot
 
     alias_method :entity_class, :subject
 
-    def snapshot_stream_name(entity, id)
-      entity_class_name = entity.class.name.split('::').last
+    def snapshot_stream_name(id, entity=nil)
+      unless entity.nil?
+        entity_class = entity.class
+      end
+
+      entity_class_name = entity_class.name.split('::').last
       entity_cateogry = Casing::Camel.(entity_class_name)
 
       Messaging::StreamName.stream_name(id, "#{entity_cateogry}:snapshot")
@@ -19,7 +23,7 @@ module EntitySnapshot
     end
 
     def put(id, entity, version, time)
-      stream_name = snapshot_stream_name(entity, id)
+      stream_name = snapshot_stream_name(id, entity)
 
       logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
@@ -42,34 +46,32 @@ module EntitySnapshot
       position
     end
 
-    module Get
-      # def get(id)
-      #   stream_name = snapshot_stream_name id
+    def get(id)
+      stream_name = snapshot_stream_name id
 
-      #   logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+      logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
 
-      #   reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1, direction: :backward
+      reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1, direction: :backward
 
-      #   event = nil
-      #   reader.each do |_event|
-      #     event = _event
-      #     break
-      #   end
+      event = nil
+      reader.each do |_event|
+        event = _event
+        break
+      end
 
-      #   if event.nil?
-      #     logger.debug "Snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
-      #     return
-      #   end
+      if event.nil?
+        logger.debug "Snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+        return
+      end
 
-      #   message = Serialize::Read.instance event.data, Message
-      #   entity = message.entity entity_class
+      message = Serialize::Read.instance event.data, Message
+      entity = message.entity entity_class
 
-      #   version, time = message.version, message.time
+      version, time = message.version, message.time
 
-      #   logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
 
-      #   return entity, version, time
-      # end
+      return entity, version, time
     end
   end
 end
