@@ -1,8 +1,6 @@
 module EntitySnapshot
   class Postgres
     module Controls
-      # Entity = EntityStore::Controls::Entity
-
       module Entity
         def self.example
           Example.build(Data.example)
