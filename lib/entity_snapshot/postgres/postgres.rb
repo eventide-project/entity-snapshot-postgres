@@ -40,7 +40,7 @@ module EntitySnapshot
 
     module Put
       def put(id, entity, version, time)
-        stream_name = snapshot_stream_name(id)
+        stream_name = snapshot_stream_name(entity, id)
 
         logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
