@@ -6,6 +6,7 @@ module EntitySnapshot
           reader_class = EventSource::Postgres::Read
           snapshot_class = EntitySnapshot::Postgres
           snapshot_interval ||= 2
+          category ||= 'example'
           ::EntityStore::Controls::EntityStore.example(category: category, entity_class: entity_class, projection_class: projection_class, reader_class: reader_class, snapshot_class: snapshot_class, snapshot_interval: snapshot_interval)
         end
       end
