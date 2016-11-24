@@ -11,7 +11,6 @@ module EntitySnapshot
         include Messaging::StreamName
         include EntityCache::Storage::Persistent
 
-        # dependency :writer, Messaging::Postgres::Write
         dependency :writer, EventSource::Postgres::Write
 
         alias_method :entity_class, :subject
@@ -19,8 +18,6 @@ module EntitySnapshot
     end
 
     def snapshot_stream_name(entity, id)
-      # category_name = self.category
-
       entity_class_name = entity.class.name.split('::').last
       entity_cateogry = Casing::Camel.(entity_class_name)
 
@@ -33,7 +30,6 @@ module EntitySnapshot
 
     module Configure
       def configure(session: nil)
-        # Messaging::Postgres::Write.configure(self, session: session)
         EventSource::Postgres::Write.configure(self, session: session)
       end
     end
@@ -57,13 +53,6 @@ module EntitySnapshot
         event_data.data = data
 
         position = writer.(event_data, stream_name)
-
-        # recorded = Recorded.new
-
-        # recorded.entity_data = entity_data
-        # recorded.entity_version = version
-
-        # position = writer.(recorded, stream_name)
 
         logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
