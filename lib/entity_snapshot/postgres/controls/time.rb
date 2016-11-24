@@ -1,5 +1,5 @@
 module EntitySnapshot
-  module Postgres
+  class Postgres
     module Controls
       Time = EntityCache::Controls::Time
     end

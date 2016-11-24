@@ -1,6 +1,6 @@
-require_relative 'automated_init'
+require_relative '../automated_init'
 
-context "Snapshot Stream Name" do
+context "Put" do
   entity = Controls::Entity.example
 
   id = Controls::ID.example
@@ -11,7 +11,7 @@ context "Snapshot Stream Name" do
 
   position = snapshot.put(id, entity, version, time)
 
-  snapshot_stream_name = snapshot.snapshot_stream_name(entity, id)
+  snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
   read_event = EventSource::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
 
