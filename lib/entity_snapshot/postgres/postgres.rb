@@ -19,6 +19,10 @@ module EntitySnapshot
     end
 
     def put(id, entity, version, time)
+      unless entity.is_a? subject
+        raise Error, "Persistent storage for #{subject} cannot store #{entity}"
+      end
+
       stream_name = snapshot_stream_name(id)
 
       logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
