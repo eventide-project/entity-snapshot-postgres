@@ -18,8 +18,14 @@ module EntitySnapshot
       end
     end
 
-    def snapshot_stream_name(id)
-      category_name = self.category
+    def snapshot_stream_name(entity, id)
+      # category_name = self.category
+
+      entity_class_name = entity.class.name.split('::').last
+      entity_cateogry = Casing::Camel.(entity_class_name)
+
+      category_name = entity_cateogry
+
       category_name = "#{category_name}:snapshot"
 
       stream_name id, category_name
