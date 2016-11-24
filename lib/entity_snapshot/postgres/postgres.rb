@@ -47,27 +47,20 @@ module EntitySnapshot
     end
 
     def get(id)
-      stream_name = snapshot_stream_name id
+      stream_name = snapshot_stream_name(id)
 
       logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
 
-      reader = EventStore::Client::HTTP::Reader.build stream_name, slice_size: 1, direction: :backward
+      event_data = EventSource::Postgres::Get.(stream_name, batch_size: 1, precedence: :desc).first
 
-      event = nil
-      reader.each do |_event|
-        event = _event
-        break
-      end
-
-      if event.nil?
-        logger.debug "Snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+      if event_data.nil?
+        logger.debug "No snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
         return
       end
 
-      message = Serialize::Read.instance event.data, Message
-      entity = message.entity entity_class
-
-      version, time = message.version, message.time
+      entity = entity_class.build(event_data.data[:entity_data])
+      version = event_data.data[:entity_version]
+      time = event_data.time
 
       logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
 

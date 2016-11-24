@@ -1,22 +1,33 @@
-# require_relative '../automated_init'
+require_relative '../automated_init'
 
-# context "Put" do
-#   entity = Controls::Entity.example
+context "Get" do
+  entity = Controls::Entity.example
 
-#   id = Controls::ID.example
-#   version = Controls::Version.example
-#   time = Controls::Time.example
+  id = Controls::ID.example
+  version = Controls::Version.example
+  time = Time.now
 
-#   snapshot = Controls::Snapshot.example
+  snapshot = Controls::Snapshot.example
 
-#   position = snapshot.put(id, entity, version, time)
+  entity.some_attribute = 'first'
+  snapshot.put(id, entity, version, time)
 
-#   recorded_entity, version, time = snapshot.get(id)
+  next_version = version + 1
+  next_time = Time.now
 
-#   context "Read Snapshotted Entity" do
-#     test "Recorded data is the written data" do
-#       assert(recorded_entity == entity)
-#     end
-#   end
-# end
+  entity.some_attribute = 'second'
+  snapshot.put(id, entity, next_version, next_time)
 
+  recorded_entity, version, time = snapshot.get(id)
+
+  context "Recorded Snapshot" do
+    test "Last snapshot is retrieved" do
+      assert(entity.some_attribute == 'second')
+      assert(version == next_version)
+    end
+
+    test "Recorded data is the written data" do
+      assert(recorded_entity == entity)
+    end
+  end
+end
