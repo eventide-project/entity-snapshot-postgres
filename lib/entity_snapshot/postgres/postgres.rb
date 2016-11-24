@@ -7,11 +7,7 @@ module EntitySnapshot
 
     alias_method :entity_class, :subject
 
-    def snapshot_stream_name(id, entity=nil)
-      unless entity.nil?
-        entity_class = entity.class
-      end
-
+    def snapshot_stream_name(id)
       entity_class_name = entity_class.name.split('::').last
       entity_cateogry = Casing::Camel.(entity_class_name)
 
@@ -23,7 +19,7 @@ module EntitySnapshot
     end
 
     def put(id, entity, version, time)
-      stream_name = snapshot_stream_name(id, entity)
+      stream_name = snapshot_stream_name(id)
 
       logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 

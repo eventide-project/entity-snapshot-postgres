@@ -11,7 +11,7 @@ context "Put" do
 
   position = snapshot.put(id, entity, version, time)
 
-  snapshot_stream_name = snapshot.snapshot_stream_name(id, entity)
+  snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
   read_event = EventSource::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
 
