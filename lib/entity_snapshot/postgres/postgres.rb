@@ -3,7 +3,7 @@ module EntitySnapshot
     include Log::Dependency
     include EntityCache::Storage::Persistent
 
-    dependency :writer, EventSource::Postgres::Write
+    dependency :writer, EventSource::Postgres::Put
 
     alias_method :entity_class, :subject
 
@@ -15,7 +15,7 @@ module EntitySnapshot
     end
 
     def configure(session: nil)
-      EventSource::Postgres::Write.configure(self, session: session)
+      EventSource::Postgres::Put.configure(self, session: session, attr_name: :writer)
     end
 
     def put(id, entity, version, time)
