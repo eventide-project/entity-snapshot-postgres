@@ -11,7 +11,8 @@ module EntitySnapshot
         include Messaging::StreamName
         include EntityCache::Storage::Persistent
 
-        dependency :writer, Messaging::Postgres::Write
+        # dependency :writer, Messaging::Postgres::Write
+        dependency :writer, EventSource::Postgres::Write
 
         alias_method :entity_class, :subject
       end
@@ -26,7 +27,8 @@ module EntitySnapshot
 
     module Configure
       def configure(session: nil)
-        Messaging::Postgres::Write.configure(self, session: session)
+        # Messaging::Postgres::Write.configure(self, session: session)
+        EventSource::Postgres::Write.configure(self, session: session)
       end
     end
 
@@ -38,22 +40,24 @@ module EntitySnapshot
 
         entity_data = Transform::Write.raw_data(entity)
 
-        # event_data = EventSource::EventData::Write.new
+        event_data = EventSource::EventData::Write.new
 
-        # data = {
-        #   entity_data: entity_data,
-        #   entity_version: version
-        # }
+        data = {
+          entity_data: entity_data,
+          entity_version: version
+        }
 
-        # event_data.type = 'Recorded'
-        # event_data.data = data
+        event_data.type = 'Recorded'
+        event_data.data = data
 
-        recorded = Recorded.new
+        position = writer.(event_data, stream_name)
 
-        recorded.entity_data = entity_data
-        recorded.entity_version = version
+        # recorded = Recorded.new
 
-        position = writer.(recorded, stream_name)
+        # recorded.entity_data = entity_data
+        # recorded.entity_version = version
+
+        # position = writer.(recorded, stream_name)
 
         logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
