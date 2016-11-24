@@ -1,5 +1,5 @@
 module EntitySnapshot
-  module Postgres
+  class Postgres
     class Log < ::Log
       def tag!(tags)
         tags << :entity_snapshot_postgres

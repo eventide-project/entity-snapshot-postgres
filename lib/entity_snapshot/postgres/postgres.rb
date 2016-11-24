@@ -1,63 +1,45 @@
 module EntitySnapshot
-  module Postgres
-    def self.included(cls)
-      cls.class_exec do
-        prepend Configure
-        prepend Get
-        prepend Put
+  class Postgres
+    include Log::Dependency
+    include EntityCache::Storage::Persistent
 
-        include Log::Dependency
+    dependency :writer, EventSource::Postgres::Write
 
-        include Messaging::StreamName
-        include EntityCache::Storage::Persistent
-
-        dependency :writer, EventSource::Postgres::Write
-
-        alias_method :entity_class, :subject
-      end
-    end
+    alias_method :entity_class, :subject
 
     def snapshot_stream_name(entity, id)
       entity_class_name = entity.class.name.split('::').last
       entity_cateogry = Casing::Camel.(entity_class_name)
 
-      category_name = entity_cateogry
-
-      category_name = "#{category_name}:snapshot"
-
-      stream_name id, category_name
+      Messaging::StreamName.stream_name(id, "#{entity_cateogry}:snapshot")
     end
 
-    module Configure
-      def configure(session: nil)
-        EventSource::Postgres::Write.configure(self, session: session)
-      end
+    def configure(session: nil)
+      EventSource::Postgres::Write.configure(self, session: session)
     end
 
-    module Put
-      def put(id, entity, version, time)
-        stream_name = snapshot_stream_name(entity, id)
+    def put(id, entity, version, time)
+      stream_name = snapshot_stream_name(entity, id)
 
-        logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
-        entity_data = Transform::Write.raw_data(entity)
+      entity_data = Transform::Write.raw_data(entity)
 
-        event_data = EventSource::EventData::Write.new
+      event_data = EventSource::EventData::Write.new
 
-        data = {
-          entity_data: entity_data,
-          entity_version: version
-        }
+      data = {
+        entity_data: entity_data,
+        entity_version: version
+      }
 
-        event_data.type = 'Recorded'
-        event_data.data = data
+      event_data.type = 'Recorded'
+      event_data.data = data
 
-        position = writer.(event_data, stream_name)
+      position = writer.(event_data, stream_name)
 
-        logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
-        position
-      end
+      position
     end
 
     module Get
