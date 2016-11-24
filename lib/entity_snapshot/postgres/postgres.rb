@@ -3,7 +3,7 @@ module EntitySnapshot
     include Log::Dependency
     include EntityCache::Storage::Persistent
 
-    dependency :writer, EventSource::Postgres::Put
+    dependency :write, EventSource::Postgres::Put
 
     alias_method :entity_class, :subject
 
@@ -15,7 +15,7 @@ module EntitySnapshot
     end
 
     def configure(session: nil)
-      EventSource::Postgres::Put.configure(self, session: session, attr_name: :writer)
+      EventSource::Postgres::Put.configure(self, session: session, attr_name: :write)
     end
 
     def put(id, entity, version, time)
@@ -39,7 +39,7 @@ module EntitySnapshot
       event_data.type = 'Recorded'
       event_data.data = data
 
-      position = writer.(event_data, stream_name)
+      position = write.(event_data, stream_name)
 
       logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
 
