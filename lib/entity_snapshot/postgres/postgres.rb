@@ -6,6 +6,8 @@ module EntitySnapshot
     dependency :write, EventSource::Postgres::Put
     dependency :read, EventSource::Postgres::Get
 
+    attr_accessor :session
+
     alias_method :entity_class, :subject
 
     def snapshot_stream_name(id)
@@ -16,8 +18,9 @@ module EntitySnapshot
     end
 
     def configure(session: nil)
-      EventSource::Postgres::Put.configure(self, session: session, attr_name: :write)
-      EventSource::Postgres::Get.configure(self, batch_size: 1, precedence: :desc, session: session, attr_name: :read)
+      EventSource::Postgres::Session.configure(self, session: session)
+      EventSource::Postgres::Put.configure(self, session: self.session, attr_name: :write)
+      EventSource::Postgres::Get.configure(self, batch_size: 1, precedence: :desc, session: self.session, attr_name: :read)
     end
 
     def put(id, entity, version, time)
