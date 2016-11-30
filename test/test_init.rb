@@ -7,8 +7,6 @@ require_relative '../init.rb'
 
 require 'test_bench'; TestBench.activate
 
-require 'pp'
-
 require 'entity_snapshot/postgres/controls'
 include EntitySnapshot
 Controls = EntitySnapshot::Postgres::Controls
