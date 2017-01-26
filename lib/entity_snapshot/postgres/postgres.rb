@@ -4,7 +4,7 @@ module EntitySnapshot
     include EntityCache::Storage::Persistent
 
     dependency :write, EventSource::Postgres::Put
-    dependency :read, EventSource::Postgres::Get
+    dependency :read, EventSource::Postgres::Get::Last
 
     attr_accessor :session
 
@@ -20,7 +20,7 @@ module EntitySnapshot
     def configure(session: nil)
       EventSource::Postgres::Session.configure(self, session: session)
       EventSource::Postgres::Put.configure(self, session: self.session, attr_name: :write)
-      EventSource::Postgres::Get.configure(self, batch_size: 1, precedence: :desc, session: self.session, attr_name: :read)
+      EventSource::Postgres::Get::Last.configure(self, session: self.session, attr_name: :read)
     end
 
     def put(id, entity, version, time)
@@ -56,7 +56,7 @@ module EntitySnapshot
 
       logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
 
-      event_data = read.(stream_name).first
+      event_data = read.(stream_name)
 
       if event_data.nil?
         logger.debug "No snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
