@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
-  s.name = 'entity_snapshot-postgres'
+  s.name = 'evt-entity_snapshot-postgres'
   s.version = '0.1.0.4'
   s.summary = 'Projected entity snapshotting for Postgres'
   s.description = ' '
