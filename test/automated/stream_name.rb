@@ -10,7 +10,7 @@ context "Snapshot Stream Name" do
 
   context "First Part" do
     context "Category" do
-      category = Messaging::StreamName.get_category(snapshot_stream_name)
+      category = Messaging::Postgres::StreamName.get_category(snapshot_stream_name)
       parts = category.split(':')
 
       test "Has two parts separated by a colon" do
@@ -35,7 +35,7 @@ context "Snapshot Stream Name" do
   end
 
   context "Second Part" do
-    stream_id = Messaging::StreamName.get_id(snapshot_stream_name)
+    stream_id = Messaging::Postgres::StreamName.get_id(snapshot_stream_name)
 
     test "Is the ID" do
       assert(snapshot_stream_name.end_with? "-#{id}")

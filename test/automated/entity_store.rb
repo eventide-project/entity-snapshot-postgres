@@ -11,7 +11,7 @@ context "Entity Store" do
   count = 2
 
   stream_name = Controls::Write.batch(category: 'example', count: count)
-  id = Messaging::StreamName.get_id(stream_name)
+  id = Messaging::Postgres::StreamName.get_id(stream_name)
 
   snapshot_stream_name = "example:snapshot-#{id}"
 
