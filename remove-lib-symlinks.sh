@@ -1,3 +1,3 @@
 source ./library-symlinks.sh
 
-remove_lib_symlinks 'entity_snapshot' 'postgres'
+remove_lib_symlinks 'postgres' 'entity_snapshot'
