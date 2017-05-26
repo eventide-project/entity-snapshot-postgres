@@ -3,8 +3,8 @@ module EntitySnapshot
     include Log::Dependency
     include EntityCache::Storage::Persistent
 
-    dependency :write, EventSource::Postgres::Put
-    dependency :read, EventSource::Postgres::Get::Last
+    dependency :write, MessageStore::Postgres::Put
+    dependency :read, MessageStore::Postgres::Get::Last
 
     attr_accessor :session
 
@@ -14,13 +14,13 @@ module EntitySnapshot
       entity_class_name = entity_class.name.split('::').last
       entity_cateogry = Casing::Camel.(entity_class_name)
 
-      Messaging::Postgres::StreamName.stream_name(id, entity_cateogry, type: 'snapshot')
+      Messaging::StreamName.stream_name(id, entity_cateogry, type: 'snapshot')
     end
 
     def configure(session: nil)
-      EventSource::Postgres::Session.configure(self, session: session)
-      EventSource::Postgres::Put.configure(self, session: self.session, attr_name: :write)
-      EventSource::Postgres::Get::Last.configure(self, session: self.session, attr_name: :read)
+      MessageStore::Postgres::Session.configure(self, session: session)
+      MessageStore::Postgres::Put.configure(self, session: self.session, attr_name: :write)
+      MessageStore::Postgres::Get::Last.configure(self, session: self.session, attr_name: :read)
     end
 
     def put(id, entity, version, time)
@@ -34,7 +34,7 @@ module EntitySnapshot
 
       entity_data = Transform::Write.raw_data(entity)
 
-      event_data = EventSource::EventData::Write.new
+      event_data = MessageStore::MessageData::Write.new
 
       data = {
         entity_data: entity_data,

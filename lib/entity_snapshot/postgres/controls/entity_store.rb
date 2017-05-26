@@ -3,7 +3,7 @@ module EntitySnapshot
     module Controls
       module EntityStore
         def self.example(category: nil, entity_class: nil, projection_class: nil, snapshot_interval: nil)
-          reader_class = EventSource::Postgres::Read
+          reader_class = MessageStore::Postgres::Read
           snapshot_class = EntitySnapshot::Postgres
           snapshot_interval ||= 2
           category ||= 'example'

@@ -25,7 +25,7 @@ module EntitySnapshot
         module Data
           def self.example
             {
-              some_attribute: EventSource::Controls::RandomValue.example
+              some_attribute: MessageStore::Controls::RandomValue.example
             }
           end
         end

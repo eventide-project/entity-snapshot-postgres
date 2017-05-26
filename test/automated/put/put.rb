@@ -13,7 +13,7 @@ context "Put" do
 
   snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
-  read_event = EventSource::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
+  read_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
 
   context "Written Entity Snapshot Message" do
     test "Recorded data is the entity data" do

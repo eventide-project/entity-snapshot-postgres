@@ -11,7 +11,7 @@ context "Entity Store" do
   count = 2
 
   stream_name = Controls::Write.batch(category: 'example', count: count)
-  id = Messaging::Postgres::StreamName.get_id(stream_name)
+  id = Messaging::StreamName.get_id(stream_name)
 
   snapshot_stream_name = "example:snapshot-#{id}"
 
@@ -23,7 +23,7 @@ context "Entity Store" do
     snapshot_position = 0
 
     context "Writes first snapshot" do
-      snapshot_event = EventSource::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
+      snapshot_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
 
       entity_data = snapshot_event.data[:entity_data]
       sum = entity_data[:sum]
@@ -56,7 +56,7 @@ context "Entity Store" do
     snapshot_position = 1
 
     context "Second Snapshot" do
-      snapshot_event = EventSource::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
+      snapshot_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
 
       test "Is not written" do
         assert(snapshot_event.nil?)
@@ -79,7 +79,7 @@ context "Entity Store" do
     snapshot_position = 1
 
     context "Writes second snapshot" do
-      snapshot_event = EventSource::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
+      snapshot_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
 
       entity_data = snapshot_event.data[:entity_data]
       sum = entity_data[:sum]
@@ -112,7 +112,7 @@ context "Entity Store" do
     snapshot_position = 2
 
     context "Third Snapshot" do
-      snapshot_event = EventSource::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
+      snapshot_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
 
       test "Is not written" do
         assert(snapshot_event.nil?)
@@ -135,7 +135,7 @@ context "Entity Store" do
     snapshot_position = 2
 
     context "Writes third snapshot" do
-      snapshot_event = EventSource::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
+      snapshot_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: snapshot_position, batch_size: 1).first
 
       entity_data = snapshot_event.data[:entity_data]
       sum = entity_data[:sum]
