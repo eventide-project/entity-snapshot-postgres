@@ -1,7 +1,7 @@
 module EntitySnapshot
   class Postgres
     include Log::Dependency
-    include EntityCache::Storage::Persistent
+    include EntityCache::Store::Persistent
 
     dependency :write, MessageStore::Postgres::Put
     dependency :read, MessageStore::Postgres::Get::Last
@@ -71,5 +71,7 @@ module EntitySnapshot
 
       return entity, version, time
     end
+
+    Error = Class.new(RuntimeError)
   end
 end
