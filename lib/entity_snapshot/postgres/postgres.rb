@@ -1,7 +1,7 @@
 module EntitySnapshot
   class Postgres
     include Log::Dependency
-    include EntityCache::Store::Persistent
+    include EntityCache::Store::External
 
     dependency :write, MessageStore::Postgres::Put
     dependency :read, MessageStore::Postgres::Get::Last
