@@ -13,11 +13,13 @@ context "Put" do
 
   snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
-  read_event = MessageStore::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
+  read_message = MessageStore::Postgres::Get.(snapshot_stream_name, position: position, batch_size: 1).first
 
   context "Written Entity Snapshot Message" do
     test "Recorded data is the entity data" do
-      assert(read_event.data[:entity_data] == entity.attributes.to_h)
+      control_data = Controls::Entity::Data.example(entity.some_attribute)
+
+      assert(read_message.data[:entity_data] == control_data)
     end
   end
 end

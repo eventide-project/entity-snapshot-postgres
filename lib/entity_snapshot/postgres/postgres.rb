@@ -63,7 +63,10 @@ module EntitySnapshot
         return
       end
 
-      entity = entity_class.build(event_data.data[:entity_data])
+      entity_data = event_data.data[:entity_data]
+
+      entity = Transform::Read.instance(entity_data, entity_class)
+
       version = event_data.data[:entity_version]
       time = event_data.time
 
