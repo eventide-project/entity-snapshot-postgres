@@ -25,12 +25,14 @@ module EntitySnapshot
 
     def put(id, entity, version, time)
       unless entity.is_a? subject
-        raise Error, "Persistent storage for #{subject} cannot store #{entity}"
+        error_msg = "Persistent storage for #{subject} cannot store #{entity}"
+        logger.error { error_msg }
+        raise Error, error_msg
       end
 
       stream_name = snapshot_stream_name(id)
 
-      logger.trace "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.trace(tag: :put) { "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
       entity_data = Transform::Write.raw_data(entity)
 
@@ -46,7 +48,7 @@ module EntitySnapshot
 
       position = write.(event_data, stream_name)
 
-      logger.debug "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.debug(tag: :put) { "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
       position
     end
@@ -54,12 +56,12 @@ module EntitySnapshot
     def get(id)
       stream_name = snapshot_stream_name(id)
 
-      logger.trace "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+      logger.trace(tag: :get) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
 
       event_data = read.(stream_name)
 
       if event_data.nil?
-        logger.debug "No snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})"
+        logger.debug(tag: :get) { "No snapshot could not be read (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
         return
       end
 
@@ -70,7 +72,7 @@ module EntitySnapshot
       version = event_data.data[:entity_version]
       time = event_data.time
 
-      logger.debug "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time})"
+      logger.debug(tag: :get) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
       return entity, version, time
     end

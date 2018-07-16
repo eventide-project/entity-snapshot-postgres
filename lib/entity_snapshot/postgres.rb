@@ -1,3 +1,5 @@
+require 'time'
+
 require 'messaging/postgres'
 require 'entity_store'
 
