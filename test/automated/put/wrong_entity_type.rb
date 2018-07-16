@@ -6,7 +6,7 @@ context "Put" do
 
     id = Controls::ID.example
     version = Controls::Version.example
-    time = Controls::Time.example
+    time = Controls::Time::Raw.example
 
     snapshot = Controls::Snapshot.example
 
