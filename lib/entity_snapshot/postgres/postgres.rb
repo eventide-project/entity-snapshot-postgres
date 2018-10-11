@@ -12,9 +12,9 @@ module EntitySnapshot
 
     def snapshot_stream_name(id)
       entity_class_name = entity_class.name.split('::').last
-      entity_cateogry = Casing::Camel.(entity_class_name)
+      entity_category = Casing::Camel.(entity_class_name)
 
-      Messaging::StreamName.stream_name(id, entity_cateogry, type: 'snapshot')
+      Messaging::StreamName.stream_name(id, entity_category, type: 'snapshot')
     end
 
     def configure(session: nil)
