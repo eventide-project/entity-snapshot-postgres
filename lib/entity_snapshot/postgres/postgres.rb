@@ -3,6 +3,8 @@ module EntitySnapshot
     include Log::Dependency
     include EntityCache::Store::External
 
+    include StreamName
+
     dependency :write, MessageStore::Postgres::Put
     dependency :read, MessageStore::Postgres::Get::Last
 
@@ -10,11 +12,10 @@ module EntitySnapshot
 
     alias_method :entity_class, :subject
 
-    def snapshot_stream_name(id)
-      entity_class_name = entity_class.name.split('::').last
-      entity_category = Casing::Camel.(entity_class_name)
+    def category
+      *, entity_class_name = entity_class.name.split('::')
 
-      Messaging::StreamName.stream_name(id, entity_category, type: 'snapshot')
+      Casing::Camel.(entity_class_name)
     end
 
     def configure(session: nil)

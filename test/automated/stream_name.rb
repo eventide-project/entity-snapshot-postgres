@@ -42,4 +42,3 @@ context "Snapshot Stream Name" do
     end
   end
 end
-
