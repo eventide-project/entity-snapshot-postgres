@@ -24,7 +24,17 @@ module EntitySnapshot
         entity = Transform::Read.instance(entity_data, entity_class)
 
         version = event_data.data[:entity_version]
-        time = event_data.time
+
+        time = event_data.data[:time]
+
+        # Backward compatibility for messages not written with
+        # a timestamp in the message data
+        # Sat Oct 13, Scott Bellware
+        if time.nil?
+          time ||= event_data.time
+        else
+          time = Time.parse(time)
+        end
 
         logger.debug(tags: [:snapshot, :cache, :get]) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 

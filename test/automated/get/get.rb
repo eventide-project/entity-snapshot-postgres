@@ -5,7 +5,7 @@ context "Get" do
 
   id = Controls::ID.example
   version = Controls::Version.example
-  time = Time.now
+  time = Controls::Time::Raw.example
 
   snapshot = Controls::Snapshot.example
 
@@ -13,7 +13,7 @@ context "Get" do
   snapshot.put(id, entity, version, time)
 
   next_version = version + 1
-  next_time = Time.now
+  next_time = time + 1
 
   entity.some_attribute = 'second'
   snapshot.put(id, entity, next_version, next_time)
@@ -26,8 +26,22 @@ context "Get" do
       assert(version == next_version)
     end
 
-    test "Recorded data is the written data" do
-      assert(recorded_entity == entity)
+    context "Recorded Entity" do
+      test "Is the written entity" do
+        assert(recorded_entity == entity)
+      end
+    end
+
+    context "Recorded Version" do
+      test "Is the assigned version" do
+        assert(version == next_version)
+      end
+    end
+
+    context "Recorded Time" do
+      test "Is the assigned time" do
+        assert(time == next_time)
+      end
     end
   end
 end
