@@ -41,9 +41,12 @@ module EntitySnapshot
 
       event_data = MessageStore::MessageData::Write.new
 
+      iso8601_time = Clock::UTC.iso8601(time)
+
       data = {
         entity_data: entity_data,
-        entity_version: version
+        entity_version: version,
+        time: iso8601_time
       }
 
       event_data.type = 'Recorded'

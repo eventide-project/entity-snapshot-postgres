@@ -13,13 +13,29 @@ context "Put" do
 
   snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
-  read_message = MessageStore::Postgres::Get::Last.(snapshot_stream_name)
-
   context "Written Entity Snapshot Message" do
-    test "Recorded data is the entity data" do
+    read_message = MessageStore::Postgres::Get::Last.(snapshot_stream_name)
+
+    context "Recorded Entity Data" do
       control_data = Controls::Entity::Data.example(entity.some_attribute)
 
-      assert(read_message.data[:entity_data] == control_data)
+      test "Is the assigned entity data" do
+        assert(read_message.data[:entity_data] == control_data)
+      end
+    end
+
+    context "Recorded Version" do
+      test "Is the assigned version" do
+        assert(read_message.data[:entity_version] == version)
+      end
+    end
+
+    context "Recorded Time" do
+      control_time = Controls::Time.example
+
+      test "Is the assigned time" do
+        assert(read_message.data[:time] == control_time)
+      end
     end
   end
 end
