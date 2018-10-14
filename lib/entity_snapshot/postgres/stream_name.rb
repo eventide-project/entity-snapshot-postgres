@@ -3,14 +3,14 @@ module EntitySnapshot
     module StreamName
       extend self
 
-      def self.included(cls)
-        cls.class_exec do
-          include Messaging::StreamName
-        end
+      def snapshot_stream_name(id, category=nil)
+        category ||= self.category
+        Messaging::StreamName.stream_name(id, category, type: 'snapshot')
       end
 
-      def snapshot_stream_name(id, category=nil)
-        stream_name(id, category, type: 'snapshot')
+      def self.category(entity_class)
+        *, entity_class_name = entity_class.name.split('::')
+        Casing::Camel.(entity_class_name)
       end
     end
   end

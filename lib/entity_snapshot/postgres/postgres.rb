@@ -15,9 +15,7 @@ module EntitySnapshot
     alias_method :entity_class, :subject
 
     def category
-      *, entity_class_name = entity_class.name.split('::')
-
-      Casing::Camel.(entity_class_name)
+      StreamName.category(subject)
     end
 
     def configure(session: nil)
