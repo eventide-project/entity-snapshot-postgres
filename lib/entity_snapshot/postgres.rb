@@ -11,3 +11,4 @@ require 'entity_snapshot/postgres/get'
 
 require 'entity_snapshot/postgres/postgres'
 require 'entity_snapshot/postgres/read_only'
+require 'entity_snapshot/postgres/flat_transform'

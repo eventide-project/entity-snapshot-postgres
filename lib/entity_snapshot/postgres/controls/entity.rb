@@ -3,12 +3,14 @@ module EntitySnapshot
     module Controls
       module Entity
         def self.example
-          attributes = {
+          Example.build(data)
+        end
+
+        def self.data
+          {
             :some_attribute => RandomValue.example,
             :some_time => Time::Raw.example
           }
-
-          Example.build(attributes)
         end
 
         class Example
@@ -47,14 +49,30 @@ module EntitySnapshot
 
         module NoTransformer
           def self.example
-            entity_class.new
-          end
-
-          def self.entity_class
-            Example
+            Example.build(
+              some_attribute: RandomValue.example
+            )
           end
 
           class Example
+            include Schema::DataStructure
+
+            attribute :some_attribute, String
+          end
+        end
+
+        module FlatTransform
+          def self.example
+            Example.build(
+              some_attribute: RandomValue.example
+            )
+          end
+
+          class Example
+            include Schema::DataStructure
+            include ::EntitySnapshot::Postgres::FlatTransform
+
+            attribute :some_attribute, String
           end
         end
       end
