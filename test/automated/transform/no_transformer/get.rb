@@ -3,46 +3,20 @@ require_relative '../../automated_init'
 context "Transform" do
   context "No Transformer" do
     context "Get" do
-      entity = Controls::Entity::NoTransformer.example
+      entity = Controls::Entity.example
 
       id = Controls::ID.example
       version = Controls::Version.example
       time = Controls::Time::Raw.example
 
-
-      entity_data = Controls::Entity::Data.example
-
-      event_data = MessageStore::MessageData::Write.new
-
-      event_data.type = 'Recorded'
-      event_data.data = entity_data
-
-      position = write.(event_data, stream_name)
-
-EntitySnapshot::Postgres::StreamName.snapshot_stream_name
-
-
-MessageStore::Postgres::Put.(event_data, stream_name)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       snapshot = Controls::Snapshot.example(entity_class: entity.class)
+      snapshot.put(id, entity, version, time)
+
+      no_transformer_entity = Controls::Entity::NoTransformer.example
+      no_transformer_snapshot = Controls::Snapshot.example(entity_class: no_transformer_entity.class)
 
       test "Is an error" do
-        assert proc { snapshot.put(id, entity, version, time) } do
+        assert proc { no_transformer_snapshot.get(id) } do
           raises_error? Transform::Error
         end
       end
