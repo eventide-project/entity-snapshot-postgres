@@ -44,6 +44,19 @@ module EntitySnapshot
             }
           end
         end
+
+        module NoTransformer
+          def self.example
+            entity_class.new
+          end
+
+          def self.entity_class
+            Example
+          end
+
+          class Example
+          end
+        end
       end
     end
   end
