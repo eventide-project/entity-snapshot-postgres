@@ -11,7 +11,8 @@ context "Put" do
 
   position = snapshot.put(id, entity, version, time)
 
-  snapshot_stream_name = snapshot.snapshot_stream_name(id)
+  cateogry = snapshot.category
+  snapshot_stream_name = EntitySnapshot::Postgres::StreamName.snapshot_stream_name(id, cateogry)
 
   context "Written Entity Snapshot Message" do
     read_message = MessageStore::Postgres::Get::Last.(snapshot_stream_name)

@@ -8,7 +8,7 @@ module EntitySnapshot
       end
 
       def get(id)
-        stream_name = snapshot_stream_name(id)
+        stream_name = snapshot_stream_name(id, category)
 
         logger.trace(tags: [:snapshot, :cache, :get]) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
 
