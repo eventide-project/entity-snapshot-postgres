@@ -25,6 +25,12 @@ module EntitySnapshot
 
       def put(*)
       end
+
+      def self.assure(store)
+        if store.snapshot_class.nil?
+          raise EntityCache::Store::External::Error
+        end
+      end
     end
   end
 end

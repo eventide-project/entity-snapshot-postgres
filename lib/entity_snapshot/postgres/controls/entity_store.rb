@@ -9,6 +9,20 @@ module EntitySnapshot
           category ||= 'example'
           ::EntityStore::Controls::EntityStore.example(category: category, entity_class: entity_class, projection_class: projection_class, reader_class: reader_class, snapshot_class: snapshot_class, snapshot_interval: snapshot_interval)
         end
+
+        module Assurance
+          def self.example(snapshot_class: nil, snapshot_interval: nil)
+            Example.new.tap do |instance|
+              instance.snapshot_class = snapshot_class
+              instance.snapshot_interval = snapshot_interval
+            end
+          end
+
+          Example = Struct.new(
+            :snapshot_class,
+            :snapshot_interval
+          )
+        end
       end
     end
   end

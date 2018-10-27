@@ -57,6 +57,12 @@ module EntitySnapshot
       position
     end
 
+    def self.assure(store)
+      if [store.snapshot_class, store.snapshot_interval].include?(nil)
+        raise EntityCache::Store::External::Error
+      end
+    end
+
     Error = Class.new(RuntimeError)
   end
 end
