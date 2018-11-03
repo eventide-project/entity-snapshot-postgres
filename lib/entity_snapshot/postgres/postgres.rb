@@ -33,7 +33,7 @@ module EntitySnapshot
 
       stream_name = snapshot_stream_name(id)
 
-      logger.trace(tags: [:snapshot, :cache, :put]) { "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
+      logger.trace(tags: [:cache, :put]) { "Writing snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
       entity_data = Transform::Write.raw_data(entity)
 
@@ -52,7 +52,7 @@ module EntitySnapshot
 
       position = write.(event_data, stream_name)
 
-      logger.debug(tags: [:snapshot, :cache, :put]) { "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
+      logger.debug(tags: [:cache, :put]) { "Wrote snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity.class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
       position
     end

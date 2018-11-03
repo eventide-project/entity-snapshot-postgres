@@ -10,12 +10,12 @@ module EntitySnapshot
       def get(id)
         stream_name = snapshot_stream_name(id)
 
-        logger.trace(tags: [:snapshot, :cache, :get]) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
+        logger.trace(tags: [:cache, :get]) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
 
         event_data = read.(stream_name)
 
         if event_data.nil?
-          logger.debug(tags: [:snapshot, :cache, :get]) { "No snapshot record (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
+          logger.debug(tags: [:cache, :get, :missg]) { "No snapshot record (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
           return
         end
 
@@ -36,7 +36,7 @@ module EntitySnapshot
           time = Time.parse(time)
         end
 
-        logger.debug(tags: [:snapshot, :cache, :get]) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
+        logger.debug(tags: [:cache, :get, :hit]) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
         return entity, version, time
       end
