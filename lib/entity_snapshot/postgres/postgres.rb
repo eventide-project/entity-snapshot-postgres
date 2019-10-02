@@ -8,7 +8,7 @@ module EntitySnapshot
     include StreamName
 
     dependency :write, MessageStore::Postgres::Put
-    dependency :read, MessageStore::Postgres::Get::Last
+    dependency :read, MessageStore::Postgres::Get::Stream::Last
 
     attr_accessor :session
 
@@ -21,7 +21,7 @@ module EntitySnapshot
     def configure(session: nil)
       MessageStore::Postgres::Session.configure(self, session: session)
       MessageStore::Postgres::Put.configure(self, session: self.session, attr_name: :write)
-      MessageStore::Postgres::Get::Last.configure(self, session: self.session, attr_name: :read)
+      MessageStore::Postgres::Get::Stream::Last.configure(self, session: self.session, attr_name: :read)
     end
 
     def put(id, entity, version, time)

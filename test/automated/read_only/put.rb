@@ -16,7 +16,7 @@ context "Read Only" do
     snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
     context "Entity Snapshot Message" do
-      read_message = MessageStore::Postgres::Get::Last.(snapshot_stream_name)
+      read_message = MessageStore::Postgres::Get::Stream::Last.(snapshot_stream_name)
 
       test "Not written" do
         assert(read_message.nil?)
