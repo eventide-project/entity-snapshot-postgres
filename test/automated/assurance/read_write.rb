@@ -11,8 +11,8 @@ context "Assurance" do
       )
 
       test "Is not an error" do
-        refute proc { snapshot_class.assure(store) } do
-          raises_error?
+        refute_raises EntityCache::Store::External::Error do
+          snapshot_class.assure(store)
         end
       end
     end
@@ -23,8 +23,8 @@ context "Assurance" do
       )
 
       test "Is an error" do
-        assert proc { snapshot_class.assure(store) } do
-          raises_error? EntityCache::Store::External::Error
+        assert_raises EntityCache::Store::External::Error do
+          snapshot_class.assure(store)
         end
       end
     end
@@ -35,8 +35,8 @@ context "Assurance" do
       )
 
       test "Is an error" do
-        assert proc { snapshot_class.assure(store) } do
-          raises_error? EntityCache::Store::External::Error
+        assert_raises EntityCache::Store::External::Error do
+          snapshot_class.assure(store)
         end
       end
     end

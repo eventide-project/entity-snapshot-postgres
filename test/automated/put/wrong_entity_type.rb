@@ -11,8 +11,8 @@ context "Put" do
     snapshot = Controls::Snapshot.example
 
     test "Is an error" do
-      assert proc { snapshot.put(id, entity, version, time) } do
-        raises_error? EntitySnapshot::Postgres::Error
+      assert_raises EntitySnapshot::Postgres::Error do
+        snapshot.put(id, entity, version, time)
       end
     end
   end
