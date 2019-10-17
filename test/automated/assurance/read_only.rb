@@ -10,7 +10,7 @@ context "Assurance" do
       )
 
       test "Is not an error" do
-        refute_raises EntityCache::Store::External::Error do
+        refute_raises(EntityCache::Store::External::Error) do
           snapshot_class.assure(store)
         end
       end
@@ -20,7 +20,7 @@ context "Assurance" do
       store = Controls::EntityStore::Assurance.example
 
       test "Is an error" do
-        assert_raises EntityCache::Store::External::Error do
+        assert_raises(EntityCache::Store::External::Error) do
           snapshot_class.assure(store)
         end
       end
@@ -32,7 +32,7 @@ context "Assurance" do
       )
 
       test "Is Not an error" do
-        refute_raises EntityCache::Store::External::Error do
+        refute_raises(EntityCache::Store::External::Error) do
           snapshot_class.assure(store)
         end
       end
@@ -44,7 +44,7 @@ context "Assurance" do
       )
 
       test "Is an error" do
-        assert_raises EntityCache::Store::External::Error do
+        assert_raises(EntityCache::Store::External::Error) do
           snapshot_class.assure(store)
         end
       end
