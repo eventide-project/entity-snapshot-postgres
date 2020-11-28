@@ -1,10 +1,10 @@
-require_relative 'automated_init'
+require_relative '../automated_init'
 
 context "Snapshot Stream Name" do
   entity = Controls::Entity.example
   id = Controls::ID.example
 
-  snapshot = Controls::Snapshot.example
+  snapshot = Controls::Snapshot.example(specifier: :none)
 
   snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
