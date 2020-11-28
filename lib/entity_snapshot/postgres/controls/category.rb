@@ -3,14 +3,21 @@ module EntitySnapshot
     module Controls
       module Category
         def self.example
-          'example:snapshot'
+          "#{Type.example}:snapshot"
         end
+
+        module Type
+          def self.example
+            'example'
+          end
+        end
+        EntityPart = Type
 
         module Specifier
           def self.example(specifier=nil)
             specifier ||= Specifier.example
 
-            "example#{specifier}:snapshot"
+            "#{Type.example}#{specifier}:snapshot"
           end
         end
       end
