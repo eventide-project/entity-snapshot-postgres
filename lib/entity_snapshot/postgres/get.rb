@@ -7,15 +7,19 @@ module EntitySnapshot
         end
       end
 
+      def entity_class
+        subject.entity_class
+      end
+
       def get(id)
         stream_name = snapshot_stream_name(id)
 
-        logger.trace(tags: [:cache, :get]) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
+        logger.trace(tags: [:cache, :get]) { "Reading snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Specifier: #{subject.specifier || '(none)'})" }
 
         event_data = read.(stream_name)
 
         if event_data.nil?
-          logger.debug(tags: [:cache, :get, :missg]) { "No snapshot record (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name})" }
+          logger.debug(tags: [:cache, :get, :missg]) { "No snapshot record (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Specifier: #{subject.specifier || '(none)'})" }
           return
         end
 
@@ -36,7 +40,7 @@ module EntitySnapshot
           time = Time.parse(time)
         end
 
-        logger.debug(tags: [:cache, :get, :hit]) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
+        logger.debug(tags: [:cache, :get, :hit]) { "Read snapshot (Stream: #{stream_name.inspect}, Entity Class: #{entity_class.name}, Specifier: #{subject.specifier || '(none)'}, Version: #{version.inspect}, Time: #{time.utc.iso8601(3)})" }
 
         return entity, version, time
       end

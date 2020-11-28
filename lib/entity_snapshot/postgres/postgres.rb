@@ -12,10 +12,8 @@ module EntitySnapshot
 
     attr_accessor :session
 
-    alias_method :entity_class, :subject
-
     def category
-      StreamName.category(subject)
+      StreamName.category(entity_class)
     end
 
     def configure(session: nil)
@@ -25,8 +23,8 @@ module EntitySnapshot
     end
 
     def put(id, entity, version, time)
-      unless entity.is_a? subject
-        error_msg = "Persistent storage for #{subject} cannot store #{entity}"
+      unless entity.is_a?(entity_class)
+        error_msg = "Persistent storage for #{entity_class} cannot store #{entity}"
         logger.error() { error_msg }
         raise Error, error_msg
       end

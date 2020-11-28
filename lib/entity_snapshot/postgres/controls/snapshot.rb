@@ -3,11 +3,11 @@ module EntitySnapshot
     module Controls
       module Snapshot
         def self.example
-          EntitySnapshot::Postgres.build(Controls::Entity::Example)
+          EntitySnapshot::Postgres.build(subject)
         end
 
         def self.subject
-          Controls::Entity::Example
+          Subject.example
         end
       end
     end

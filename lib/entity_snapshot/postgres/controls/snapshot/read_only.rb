@@ -4,7 +4,11 @@ module EntitySnapshot
       module Snapshot
         module ReadOnly
           def self.example
-            EntitySnapshot::Postgres::ReadOnly.build(Controls::Entity::Example)
+            EntitySnapshot::Postgres::ReadOnly.build(subject)
+          end
+
+          def self.subject
+            Snapshot.subject
           end
         end
       end
