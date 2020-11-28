@@ -15,7 +15,7 @@ module EntitySnapshot
 
         module Specifier
           def self.example(specifier=nil)
-            specifier ||= Specifier.example
+            specifier ||= Controls::Specifier.example
 
             "#{Type.example}#{specifier}:snapshot"
           end

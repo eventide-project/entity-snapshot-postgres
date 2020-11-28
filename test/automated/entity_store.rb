@@ -13,7 +13,7 @@ context "Entity Store" do
   stream_name = Controls::Write.batch(category: 'example', count: count)
   id = Messaging::StreamName.get_id(stream_name)
 
-  snapshot_stream_name = "example:snapshot-#{id}"
+  snapshot_stream_name = "#{Controls::Category::Specifier.example}-#{id}"
 
   total = total + count
 

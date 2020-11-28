@@ -8,7 +8,7 @@ module EntitySnapshot
           end
 
           def self.subject
-            Snapshot.subject
+            Subject.example
           end
         end
       end
