@@ -13,7 +13,7 @@ module EntitySnapshot
     attr_accessor :session
 
     def category
-      StreamName.category(entity_class)
+      StreamName.category(entity_class, specifier)
     end
 
     def configure(session: nil)
