@@ -19,10 +19,10 @@ context "Snapshot Stream Name" do
 
       context "First Part" do
         entity_class_name = entity.class.name.split('::').last
-        entity_cateogry = Casing::Camel.(entity_class_name)
+        entity_category = Casing::Camel.(entity_class_name)
 
         test "Is the entity class name" do
-          assert(parts.first == entity_cateogry)
+          assert(parts.first == entity_category)
         end
       end
 
