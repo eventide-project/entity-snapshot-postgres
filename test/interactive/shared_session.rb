@@ -1,3 +1,6 @@
+ENV['LOG_TAGS'] ||= 'session,_untagged'
+ENV['LOG_LEVEL'] ||= 'debug'
+
 require_relative 'interactive_init'
 
 
@@ -15,7 +18,7 @@ store_class = Class.new do
   entity entity_class
   projection projection_class
   reader reader_class
-  snapshot snapshot_class, snapshot_interval
+  snapshot snapshot_class, interval: snapshot_interval
 end
 
 session = MessageStore::Postgres::Session.build

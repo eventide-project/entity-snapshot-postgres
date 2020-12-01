@@ -8,9 +8,16 @@ module EntitySnapshot
         Messaging::StreamName.stream_name(id, category, type: 'snapshot')
       end
 
-      def self.category(entity_class)
+      def self.category(entity_class, specifier=nil)
         *, entity_class_name = entity_class.name.split('::')
-        Casing::Camel.(entity_class_name)
+
+        entity_class_name = Casing::Camel.(entity_class_name)
+
+        if specifier.nil?
+          entity_class_name
+        else
+          "#{entity_class_name}#{specifier}"
+        end
       end
     end
   end

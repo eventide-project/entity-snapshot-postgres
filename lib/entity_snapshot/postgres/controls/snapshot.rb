@@ -2,12 +2,10 @@ module EntitySnapshot
   class Postgres
     module Controls
       module Snapshot
-        def self.example
-          EntitySnapshot::Postgres.build(Controls::Entity::Example)
-        end
+        def self.example(specifier: nil)
+          subject = Subject.example(specifier: specifier)
 
-        def self.subject
-          Controls::Entity::Example
+          EntitySnapshot::Postgres.build(subject)
         end
       end
     end

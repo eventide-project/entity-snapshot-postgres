@@ -1,10 +1,10 @@
-require_relative 'automated_init'
+require_relative '../automated_init'
 
 context "Snapshot Stream Name" do
   entity = Controls::Entity.example
   id = Controls::ID.example
 
-  snapshot = Controls::Snapshot.example
+  snapshot = Controls::Snapshot.example(specifier: :none)
 
   snapshot_stream_name = snapshot.snapshot_stream_name(id)
 
@@ -18,11 +18,10 @@ context "Snapshot Stream Name" do
       end
 
       context "First Part" do
-        entity_class_name = entity.class.name.split('::').last
-        entity_cateogry = Casing::Camel.(entity_class_name)
+        entity_category = Controls::Category::EntityPart.example
 
         test "Is the entity class name" do
-          assert(parts.first == entity_cateogry)
+          assert(parts.first == entity_category)
         end
       end
 
