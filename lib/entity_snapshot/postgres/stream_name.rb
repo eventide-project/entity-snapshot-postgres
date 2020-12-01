@@ -5,6 +5,7 @@ module EntitySnapshot
 
       def snapshot_stream_name(id, category=nil)
         category ||= self.category
+
         Messaging::StreamName.stream_name(id, category, type: 'snapshot')
       end
 

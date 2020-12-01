@@ -1,7 +1,11 @@
 module EntitySnapshot
   class Postgres
     module Controls
-      ID = EntityStore::Controls::ID
+      module ID
+        def self.example
+          Identifier::UUID::Controls::Random.example
+        end
+      end
     end
   end
 end
